@@ -292,7 +292,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a26497634ca7fb647b4dae0b0fea0b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 6234361101697976459}
+  agent: {fileID: -4029704942557590251}
+  lure: {fileID: 0}
+  lureLogic: {fileID: 0}
+  lureLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  patrolRadius: 7
+  lureDetectionRadius: 3
+  immediateFleeRadius: 8
+  investigationChance: 0.5
+  jigMultiplier: 2
+  reelMovePenalty: 0.5
+  minWaitTime: 0.1
+  maxWaitTime: 3
+  hasDetectedLure: 0
+  currentState: 0
 --- !u!195 &-4029704942557590251
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -304,10 +319,10 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 2
   m_Speed: 10
-  m_Acceleration: 15
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 270
-  m_StoppingDistance: 5
+  m_AngularSpeed: 90
+  m_StoppingDistance: 2.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
@@ -327,7 +342,6 @@ GameObject:
   - component: {fileID: 2667988604791015377}
   - component: {fileID: 7488872720075271065}
   - component: {fileID: 4172705479103762469}
-  - component: {fileID: 8339128060169427652}
   m_Layer: 0
   m_Name: RedFishBody
   m_TagString: Untagged
@@ -426,16 +440,3 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8339128060169427652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5888162934090846158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a26497634ca7fb647b4dae0b0fea0b71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
