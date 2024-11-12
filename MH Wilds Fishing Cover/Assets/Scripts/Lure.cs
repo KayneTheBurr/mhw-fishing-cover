@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Cinemachine;
 using NUnit.Framework;
+using UnityEngine.UI;
+using TMPro;
 
 
 public class Lure : MonoBehaviour
 {
-    public CinemachineCamera vCam;
+    //vCam is the inwater cam
+    public CinemachineCamera vCam, targetterCam, fishCam;
     public CastLure castLure;
-    public GameObject rippleFX, winLabel, loseLabel;
+    public GameObject rippleFX, winLabel, loseLabel, castingUI, castedUI, fishCaughtPanel;
     public bool reelCasted, hooked, fishCaught;
     public Transform lureStart, lureTarget;
     public float castStartTime, castDuration, reelDuration, lureFraction;
@@ -18,6 +21,7 @@ public class Lure : MonoBehaviour
     public float hookWindow, shakeStrength;
     public int numberFishesCaught, numberFishesTotal;
     public List<GameObject> fishList = new List<GameObject>();
+    public TextMeshProUGUI fishCaughtLabel;
 
     private void Start()
     {
@@ -29,6 +33,7 @@ public class Lure : MonoBehaviour
             fishList.Add(fish.gameObject);
             numberFishesTotal++;
         }
+        castingUI.SetActive(true);
     }
 
     public IEnumerator FishBite(GameObject fish)
@@ -41,8 +46,13 @@ public class Lure : MonoBehaviour
         while(hookedTime > 0)
         {
             hookedTime -= Time.deltaTime;
+
             if(Input.GetKeyDown(KeyCode.Space))
             {
+                reelCasted = false;
+                fishCam.Priority = 20;
+                vCam.Priority = 10;
+                targetterCam.Priority = 10;
                 StartCoroutine(ReelIn());
                 //reel in while fish is on hook = caught
                 Debug.Log("Fish Caught");
@@ -50,14 +60,20 @@ public class Lure : MonoBehaviour
                 fishCaught=true;
                 numberFishesCaught++;
                 hookWindow -= hookWindow / 10;
-                //Destroy(fish);
-                //StopCoroutine(FishBite()); //not working bc i started it on the fish??
-                //yield break;
+                fishCaughtPanel.SetActive(true);
+                fishCaughtLabel.text = fish.name;
+                
+                
+            }
+            if(hookWindow - hookedTime > 1)
+            {
+                castedUI.SetActive(false);
             }
             yield return null;
         }
         //if i get here it means a fish was hooked and ran out of time
         //currently not cutting out of this section 
+
         Debug.Log("determine state of game");
 
         if (!fishCaught)
@@ -73,8 +89,14 @@ public class Lure : MonoBehaviour
             Debug.Log("You win");
             winLabel.SetActive(true);
         }
+        else if(fishCaught && numberFishesCaught < numberFishesTotal)
+        {
+            Debug.Log("Keep Fishing");
+            castingUI.SetActive(true);
+        }
+        yield return new WaitForSeconds(2);
         Destroy(fish);
-
+        fishCaughtPanel.SetActive(false);
     }
     
 
@@ -139,7 +161,11 @@ public class Lure : MonoBehaviour
 
         else if (reelCasted && lureFraction >= 1f)
         {
-
+            vCam.Priority = 20;
+            fishCam.Priority = 10;
+            targetterCam.Priority = 10;
+            castingUI.SetActive(false);
+            castedUI.SetActive(true);
             lureTarget = transform;
 
             // Small jigging reel with 'S'
@@ -206,9 +232,23 @@ public class Lure : MonoBehaviour
         transform.position = lureStart.position;
         reelFraction = 0;
         lureFraction = 0;
+        if(!hooked)
+        {
+            Debug.Log("No fish go to targetter");
+            vCam.Priority = 10;
+            fishCam.Priority = 10;
+            targetterCam.Priority = 20;
+        }
+
         hooked = false;
 
-        
-        
+        yield return new WaitForSeconds(2);
+        Debug.Log("Delayed Go to Targetter");
+        vCam.Priority = 10;
+        fishCam.Priority = 10;
+        targetterCam.Priority = 20;
+
+
+
     }
 }

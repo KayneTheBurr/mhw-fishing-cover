@@ -13,6 +13,7 @@ public enum FishState
 
 public class FishLogic : MonoBehaviour
 {
+    public FishTypeData fishType;
     public NavMeshAgent agent;
     public Transform lure;
     public Lure lureLogic;
@@ -55,15 +56,15 @@ public class FishLogic : MonoBehaviour
 
     private void ChangeState(FishState newState)
     {
-        // Change the current state
+        // Change  state
         currentState = newState;
         //Debug.Log(currentState);
 
-        // Stop the agent if switching to a state where movement control changes
+        
         if (agent != null)
             agent.ResetPath();
 
-        // Start or restart the appropriate coroutine
+        // Start coroutine
         switch (newState)
         {
             case FishState.Patrol:
